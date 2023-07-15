@@ -1,0 +1,18 @@
+{
+  "name": "microsoft-graph-tuts",
+  "version": "1.0.0",
+  "description": "Microsft graph API tutorials",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vivek Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/identity": "^3.2.3",
+    "@microsoft/microsoft-graph-client": "^3.0.5",
+    "dotenv": "^16.3.1",
+    "isomorphic-fetch": "^3.0.0",
+    "readline-sync": "^1.4.10"
+  }
+}
