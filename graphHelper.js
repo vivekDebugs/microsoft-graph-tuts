@@ -112,6 +112,7 @@ async function sendMailAsync(subject, body, recipient) {
 async function makeGraphCallAsync() {
   try {
     await getUserPhotoAsync()
+    await updateUserProfilePhotoAsync()
   } catch (error) {
     console.log(error)
   }
@@ -138,6 +139,31 @@ async function saveBlob(blob) {
   } catch (error) {
     console.log(error)
   }
+}
+
+async function updateUserProfilePhotoAsync() {
+  // Ensure client isn't undefined
+  if (!_userClient) {
+    throw new Error('Graph has not been initialized for user auth')
+  }
+
+  try {
+    const dir = 'artifacts'
+    const imageBin = await getFileData(dir + '/new-profile.jpg')
+
+    await _userClient.api('/me/photo/$value').put(imageBin)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function getFileData(filePath) {
+  return new Promise((res, rej) => {
+    fs.readFile(filePath, (err, data) => {
+      if (err) rej(err)
+      else res(data)
+    })
+  })
 }
 
 module.exports = {
