@@ -2,6 +2,7 @@ require('isomorphic-fetch')
 const azure = require('@azure/identity')
 const graph = require('@microsoft/microsoft-graph-client')
 const authProviders = require('@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials')
+const fs = require('fs')
 
 let _settings = undefined
 let _deviceCodeCredential = undefined
@@ -108,7 +109,36 @@ async function sendMailAsync(subject, body, recipient) {
   })
 }
 
-async function makeGraphCallAsync() {}
+async function makeGraphCallAsync() {
+  try {
+    await getUserPhotoAsync()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function getUserPhotoAsync() {
+  // Ensure client isn't undefined
+  if (!_userClient) {
+    throw new Error('Graph has not been initialized for user auth')
+  }
+
+  const blob = await _userClient.api('/me/photo/$value').get()
+  await saveBlob(blob)
+}
+
+async function saveBlob(blob) {
+  try {
+    const dir = 'artifacts'
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir)
+    }
+    const buffer = Buffer.from(await blob.arrayBuffer())
+    fs.writeFileSync(dir + '/profile.jpg', buffer)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 module.exports = {
   initializeGraphForUserAuth,
